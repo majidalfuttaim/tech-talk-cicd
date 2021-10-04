@@ -44,8 +44,7 @@ pipeline {
                 sh script:'''
                        docker build --no-cache -t $ECR_REPO:$ENVIRONMENT-latest . --network host
                     '''
-                }
-            }   
+            } 
 
         }
         stage('Test') {
@@ -59,7 +58,6 @@ pipeline {
                 sh script:'''
                        echo Do tests here :)
                     '''
-                }
             }
         }
         stage('Push') {
@@ -74,9 +72,9 @@ pipeline {
                     /usr/local/bin/aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_REPO
                     docker push $ECR_REPO:$ENVIRONMENT-latest
                 '''
-                }
             }
         } 
+
   post {
         always {
             office365ConnectorSend (
