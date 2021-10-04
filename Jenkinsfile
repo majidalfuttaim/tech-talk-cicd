@@ -56,7 +56,7 @@ pipeline {
                 }
                 steps {
                     sh script:'''
-                           echo Do tests here :)
+                           echo Do tests here
                         '''
                 }
             }
