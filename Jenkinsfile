@@ -6,7 +6,7 @@ pipeline {
     agent any
     
     environment {
-        ECR_REPO = '243060292047.dkr.ecr.eu-west-1.amazonaws.com/tech-talk'
+        ECR_REPO = '243060292047.dkr.ecr.eu-west-1.amazonaws.com/grid-extras'
         teams_url = "https://majidalfuttaim.webhook.office.com/webhookb2/9c4d9eba-3f45-43eb-b60f-01487a9fc92e@b09ab65e-9063-4862-afa2-d75ab48bba74/JenkinsCI/2d1c5570cf2f4f638211201e331a823f/ea36fd4b-baff-4d76-b4f3-ddf2a3c0cf1d"
         ENVIRONMENT = "${env.BRANCH_NAME == 'develop' ? 'dev' : 'prod'}"
 
@@ -43,7 +43,7 @@ pipeline {
                 }
                 steps {
                     sh script:'''
-                           docker build --no-cache -t $ECR_REPO:$ENVIRONMENT-$pr_id-$date . --network host
+                           docker build --no-cache -t $ECR_REPO:tech-talk-$ENVIRONMENT-$pr_id-$date . --network host
                         '''
                 }
             } 
@@ -71,7 +71,7 @@ pipeline {
                 steps {
                     sh script:'''
                         /usr/local/bin/aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_REPO
-                        docker push $ECR_REPO:$ENVIRONMENT-$pr_id-$date
+                        docker push $ECR_REPO:tech-talk-$ENVIRONMENT-$pr_id-$date
                     '''
                 }
             }
@@ -94,7 +94,7 @@ pipeline {
                             git config user.name "Jenkins Automation Server"       
                             git checkout develop
 
-                            sed -i "s/#IMAGE_TAG/$ENVIRONMENT-$pr_id-$date/g" deploy.yaml
+                            sed -i "s/#IMAGE_TAG/tech-talk-$ENVIRONMENT-$pr_id-$date/g" deploy.yaml
                             git add deploy.yaml
                             git commit -m "Updated deploy.yaml with tag $ENVIRONMENT-$pr_id-$date"
                             git push origin develop
