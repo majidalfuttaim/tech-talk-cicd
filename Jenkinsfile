@@ -87,7 +87,8 @@ pipeline {
                 sshagent(['tech-talk']) {
                     sh script:'''
                             #!/bin/bash
-                            GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone git@github.com:majidalfuttaim/tech-talk-cicd-deployment.git /tmp/repo
+                            export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+                            git clone git@github.com:majidalfuttaim/tech-talk-cicd-deployment.git /tmp/repo
                             cd /tmp/repo/k8s
                             git config user.email "jenkins@maf.ae"
                             git config user.name "Jenkins Automation Server"       
