@@ -34,7 +34,7 @@ pipeline {
                 }
             }
         
-            stage('Build-Push Image') {
+            stage('Build Image') {
                 when {
                     anyOf {
                         branch 'develop'
@@ -94,7 +94,9 @@ pipeline {
                             git config user.name "Jenkins Automation Server"       
                             git checkout develop
 
-                            sed -i "s/#IMAGE_TAG/tech-talk-$ENVIRONMENT-$pr_id-$date/g" deploy.yaml
+                            export image=`grep "image:" deploy.yaml |awk '{print $2}'`
+                            echo "Will replace $image from previous build"
+                            sed -i "s/$image/$ECR_REPO:tech-talk-$ENVIRONMENT-$pr_id-$date/g" deploy.yaml
                             git add deploy.yaml
                             git commit -m "Updated deploy.yaml with tag $ENVIRONMENT-$pr_id-$date"
                             git push origin develop
