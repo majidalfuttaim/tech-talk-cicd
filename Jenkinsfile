@@ -29,6 +29,7 @@ pipeline {
                     script {
                         env.pr_id =  sh (script: 'git log -n 1 --pretty=format:"%s" |cut -d "#" -f2 | cut -d" " -f1 |tr -dc "0-9"', returnStdout: true).trim()
                         env.pr_author = sh (script: 'git log -n 1 --pretty=format:"%an"', returnStdout: true).trim()
+                        env.date = sh (script: 'date +%d%m%y%H%M', returnStdout: true).trim()
                     }                   
                 }
             }
@@ -42,7 +43,7 @@ pipeline {
                 }
                 steps {
                     sh script:'''
-                           docker build --no-cache -t $ECR_REPO:$ENVIRONMENT-latest . --network host
+                           docker build --no-cache -t $ECR_REPO:$ENVIRONMENT-$pr_id-$date . --network host
                         '''
                 }
             } 
@@ -70,10 +71,37 @@ pipeline {
                 steps {
                     sh script:'''
                         /usr/local/bin/aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_REPO
-                        docker push $ECR_REPO:$ENVIRONMENT-latest
+                        docker push $ECR_REPO:$ENVIRONMENT-$pr_id-$date
                     '''
                 }
             }
+            stage('Deployment') {
+                when {
+                    anyOf {
+                        branch 'develop'
+                        branch 'master'
+                    }
+                }
+                steps {
+
+                sshagent(['tech-talk']) {
+                    sh script:'''
+                            #!/bin/bash
+                            git clone git@github.com:majidalfuttaim/tech-talk-cicd-deployment.git /tmp/repo
+                            cd /tmp/repo/k8s
+                            git config user.email "jenkins@maf.ae"
+                            git config user.name "Jenkins Automation Server"       
+                            git checkout develop
+
+                            sed -i "s/#IMAGE_TAG/$ENVIRONMENT-$pr_id-$date/g" deploy.yaml
+                            git add deploy.yaml
+                            git commit -m "Updated deploy.yaml with tag $ENVIRONMENT-$pr_id-$date"
+                            git push origin develop
+                    '''
+                    }
+                }
+            }
+
         }
 
       post {
