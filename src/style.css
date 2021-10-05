@@ -182,7 +182,7 @@ hr {
 .box {
   float: left;
   padding: 1.5em 1em;
-  width: 50%;
+  width: 25%;
   height: 400px;
   border-top: 0.1em solid #d3d3d3;
   border-bottom: 0.1em solid #d3d3d3;
