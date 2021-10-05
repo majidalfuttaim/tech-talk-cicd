@@ -71,7 +71,7 @@ a {
   font-size: 1em;
   font-weight: bold;
   text-transform: uppercase;
-  background: #ad0000;
+  background: blue;
   color: #fff;
   border: 0;
   cursor: pointer;
@@ -85,7 +85,7 @@ a {
 
 .link {
   font-weight: bold;
-  color: #ad0000;
+  color: blue;
 }
 .link:focus, .link:hover {
   color: #7a0000;
@@ -103,7 +103,7 @@ nav h1 {
 }
 
 nav h1 a {
-  color: #ad0000;
+  color: blue;
 }
 
 .nav-ul {
@@ -127,14 +127,14 @@ header .nav-ul a {
   color: #333;
 }
 header .nav-ul a:focus, header .nav-ul a:hover {
-  color: #ad0000;
+  color: blue;
 }
 header .nav-ul a:active {
   color: #c70000;
 }
 
 header li:first-child a {
-  background: #ad0000;
+  background: blue;
   color: #fff;
 }
 header li:first-child a:hover {
